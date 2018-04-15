@@ -1,0 +1,417 @@
+Student name: Lavinia Wang
+
+/*******************************************************************************************************************************************/
+/* 3. Timing: Part 1 (20 Points): */
+
+Run the program twice timing it both times, and answer the following:
+a. How for 65536 strings of length 8 how many cumulative seconds did insertionSort() take?
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls   s/call   s/call  name
+ 67.22     22.89    22.89        1    22.89    33.49  insertionSort
+ 31.12     33.49    10.60 1070956961     0.00     0.00  swap
+  1.97     34.16     0.67                             frame_dummy
+  0.03     34.17     0.01        1     0.01     0.01  print
+  0.00     34.17     0.00        3     0.00     0.00  obtainIntInRange
+  0.00     34.17     0.00        1     0.00     0.00  generateStringArray
+  0.00     34.17     0.00        1     0.00     0.00  releaseMem
+
+Cumulative seconds for insertionSort: 22.89
+
+b. How for 65536 strings of length 8 how many cumulative seconds did quickSort_() take?
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  ms/call  ms/call  name
+ 50.18      0.02     0.02    65535     0.00     0.00  partition
+ 25.09      0.03     0.01   250793     0.00     0.00  swap
+ 25.09      0.04     0.01        1    10.04    10.04  generateStringArray
+  0.00      0.04     0.00    65535     0.00     0.00  pivot
+  0.00      0.04     0.00        3     0.00     0.00  obtainIntInRange
+  0.00      0.04     0.00        1     0.00     0.00  print
+  0.00      0.04     0.00        1     0.00    30.11  quickSort
+  0.00      0.04     0.00        1     0.00    30.11  quickSort_
+  0.00      0.04     0.00        1     0.00     0.00  releaseMem
+
+Cumulative seconds for quickSort: 0.04
+
+/*******************************************************************************************************************************************/
+
+/* 4. Timing: Part 2 (20 Points): */
+Run the program twice timing it both times, and answer the following:
+a. How for 65536 strings of length 8 how many cumulative seconds did insertionSort() take?
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  ns/call  ns/call  name
+ 76.40     11.61    11.61                             insertionSort
+ 19.00     14.50     2.89 1070956961     2.70     2.70  swap
+  4.86     15.24     0.74                             frame_dummy
+  0.20     15.27     0.03                             print
+
+Cumulative seconds for insertionSort: 11.61
+
+b. How for 65536 strings of length 8 how many cumulative seconds did quickSort_() take?
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  ns/call  ns/call  name
+100.46      0.01     0.01    65535   153.29   153.29  partition
+  0.00      0.01     0.00   250793     0.00     0.00  swap
+  0.00      0.01     0.00    65535     0.00     0.00  pivot
+
+
+Cumulative seconds for quickSort: 0.00(Runs too fast to be captured.)
+
+/*******************************************************************************************************************************************/
+
+/* 5. Algorithm choice vs. Compiler optimization (Points 10): */
+Which makes more of a difference: using -O2 or using the more efficient algorithm?
+
+Efficient algorithm would reduce much more time compared with compiler optmization. For instance, in this case we compared two algorithms, 
+insertion sort and quicksort. For insertion sort, the simplest worst case input is an array sorted in reverse order, which takes quadratic running time, i.e., O(n2). On average, this algorithm still takes O(n2) time. While quicksort, the algorithm takes O(nlogn) comparisons to 
+sort n items. If n equals one million, the difference between two runtime is one trillion(1,000,000,000,000) vs twenty million(20,000,000). Compiler optmization is limited in runtime reduction.
+
+/*******************************************************************************************************************************************/
+
+/* 6. Parts of an executable (Points 20): */
+Please find the following inside of assign1-0 by using objdump.
+If it can be found then both
+a. Give the objdump command, and
+b. Show the objdump result
+If it cannot be found then tell why not. Where in the memory of the runtime process is it?
+
+Look for:
+
+a. The string "number of strings" in main()
+b. The code for releaseMem()
+c. The global variable strLen
+d. The local variable choice in main()
+
+Question		Command	 		    					Result
+(A)	 	objdump -s -j .rodata assign1-0 		Contents of section .rodata:
+ 								401018 01000200 00000000 00000000 00000000  ................
+ 								401028 506c6561 73652065 6e746572 20257320  Please enter %s
+ 								401038 2825642d 2564293a 20002564 006e756d  (%d-%d): .%d.num
+ 								401048 62657220 6f662073 7472696e 6773006c  ber of strings.l
+ 								401058 656e6774 68206f66 20656163 68207374  ength of each st
+ 								401068 72696e67 00000000 3120666f 7220696e  ring....1 for in
+ 								401078 73657274 696f6e20 736f7274 206f7220  sertion sort or
+ 								401088 3220666f 72207175 69636b73 6f727400  2 for quicksort.
+ 
+(B)	 	objdump -d -j .text assign1-0			0000000000400a8c <releaseMem>:
+ 								400a8c:       55                      push   %rbp
+  								400a8d:       48 89 e5                mov    %rsp,%rbp
+  								400a90:       48 83 ec 20             sub    $0x20,%rsp
+  								400a94:       e8 57 fc ff ff          callq  4006f0 <mcount@plt>
+  								400a99:       48 89 7d e8             mov    %rdi,-0x18(%rbp)
+  								400a9d:       89 75 e4                mov    %esi,-0x1c(%rbp)
+  								400aa0:       c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  								400aa7:       eb 23                   jmp    400acc <releaseMem+0x40>
+ 								400aa9:       8b 45 fc                mov    -0x4(%rbp),%eax
+  								400aac:       48 98                   cltq
+  								400aae:       48 8d 14 c5 00 00 00    lea    0x0(,%rax,8),%rdx
+ 								400ab5:       00
+  								400ab6:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  								400aba:       48 01 d0                add    %rdx,%rax
+  								400abd:       48 8b 00                mov    (%rax),%rax
+  								400ac0:       48 89 c7                mov    %rax,%rdi
+  								400ac3:       e8 98 fb ff ff          callq  400660 <free@plt>
+ 								400ac8:       83 45 fc 01             addl   $0x1,-0x4(%rbp)
+ 								400acc:       8b 45 fc                mov    -0x4(%rbp),%eax
+  								400acf:       3b 45 e4                cmp    -0x1c(%rbp),%eax
+  								400ad2:       7c d5                   jl     400aa9 <releaseMem+0x1d>
+  								400ad4:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  								400ad8:       48 89 c7                mov    %rax,%rdi
+  								400adb:       e8 80 fb ff ff          callq  400660 <free@plt>
+  								400ae0:       c9                      leaveq
+  								400ae1:       c3                      retq
+
+(C)		objdump -t -j .bss  assign1-0			SYMBOL TABLE:
+								0000000000602090 l    d  .bss   0000000000000000              .bss
+								0000000000602090 l     O .bss   0000000000000004              called.4232
+								0000000000602094 l     O .bss   0000000000000001              completed.6345
+								0000000000602098 g     O .bss   0000000000000004              strLen
+								00000000006020a0 g       .bss   0000000000000000              _end
+								0000000000602084 g       .bss   0000000000000000              __bss_start
+ 
+(D)		The local variable choice in main() cannot be found as local variables are stored on stack, which requires the program to be running to exist. 
+
+/*******************************************************************************************************************************************/
+
+7. Compiler optimizations (Points 10):
+Compare the assembly code of assign1-0 with assign1-2. Find and show at least 2 optimizations that the compiler did to make assign1-2 run faster than assign1-0.
+
+i.The following piece of code found in assign1-0 is eliminated from assign1-2. 
+0000000000400670 <putchar@plt>:
+  400670:       ff 25 aa 19 20 00       jmpq   *0x2019aa(%rip)        # 602020 <_GLOBAL_OFFSET_TABLE_+0x20>
+  400676:       68 01 00 00 00          pushq  $0x1
+  40067b:       e9 d0 ff ff ff          jmpq   400650 <_init+0x20>
+
+ii. In assign1-0, main() in the first piece is compiled after releaseMem() while in assign1-2 shown as the second piece, main() is the first compiled in .text.
+
+0000000000400ae2 <main>:
+  400ae2:       55                      push   %rbp
+  400ae3:       48 89 e5                mov    %rsp,%rbp
+  400ae6:       48 83 ec 10             sub    $0x10,%rsp
+  400aea:       e8 01 fc ff ff          callq  4006f0 <mcount@plt>
+  400aef:       ba 00 00 10 00          mov    $0x100000,%edx
+  400af4:       be 01 00 00 00          mov    $0x1,%esi
+  400af9:       bf 45 10 40 00          mov    $0x401045,%edi
+  400afe:       e8 d7 fd ff ff          callq  4008da <obtainIntInRange>
+  400b03:       89 45 fc                mov    %eax,-0x4(%rbp)
+  400b06:       ba 10 00 00 00          mov    $0x10,%edx
+  400b0b:       be 01 00 00 00          mov    $0x1,%esi
+  400b10:       bf 57 10 40 00          mov    $0x401057,%edi
+  400b15:       e8 c0 fd ff ff          callq  4008da <obtainIntInRange>
+  400b1a:       89 05 78 15 20 00       mov    %eax,0x201578(%rip)        # 602098 <strLen>
+  400b20:       ba 02 00 00 00          mov    $0x2,%edx
+  400b25:       be 01 00 00 00          mov    $0x1,%esi
+  400b2a:       bf 70 10 40 00          mov    $0x401070,%edi
+  400b2f:       e8 a6 fd ff ff          callq  4008da <obtainIntInRange>
+  400b34:       89 45 f8                mov    %eax,-0x8(%rbp)
+  400b37:       8b 45 fc                mov    -0x4(%rbp),%eax
+  400b3a:       89 c7                   mov    %eax,%edi
+  400b3c:       e8 12 fe ff ff          callq  400953 <generateStringArray>
+  400b41:       48 89 45 f0             mov    %rax,-0x10(%rbp)
+  400b45:       8b 45 f8                mov    -0x8(%rbp),%eax
+  400b48:       83 f8 01                cmp    $0x1,%eax
+  400b4b:       74 07                   je     400b54 <main+0x72>
+  400b4d:       83 f8 02                cmp    $0x2,%eax
+  400b50:       74 1a                   je     400b6c <main+0x8a>
+  400b52:       eb 2f                   jmp    400b83 <main+0xa1>
+  400b54:       8b 55 fc                mov    -0x4(%rbp),%edx
+  400b57:       48 8b 45 f0             mov    -0x10(%rbp),%rax
+  400b5b:       89 d6                   mov    %edx,%esi
+  400b5d:       48 89 c7                mov    %rax,%rdi
+  400b60:       b8 00 00 00 00          mov    $0x0,%eax
+  400b65:       e8 42 00 00 00          callq  400bac <insertionSort>
+  400b6a:       eb 17                   jmp    400b83 <main+0xa1>
+  400b6c:       8b 55 fc                mov    -0x4(%rbp),%edx
+  400b6f:       48 8b 45 f0             mov    -0x10(%rbp),%rax
+  400b73:       89 d6                   mov    %edx,%esi
+  400b75:       48 89 c7                mov    %rax,%rdi
+  400b78:       b8 00 00 00 00          mov    $0x0,%eax
+  400b7d:       e8 b5 03 00 00          callq  400f37 <quickSort>
+  400b82:       90                      nop
+  400b83:       8b 55 fc                mov    -0x4(%rbp),%edx
+  400b86:       48 8b 45 f0             mov    -0x10(%rbp),%rax
+  400b8a:       89 d6                   mov    %edx,%esi
+  400b8c:       48 89 c7                mov    %rax,%rdi
+  400b8f:       e8 7f fe ff ff          callq  400a13 <print>
+  400b94:       8b 55 fc                mov    -0x4(%rbp),%edx
+  400b97:       48 8b 45 f0             mov    -0x10(%rbp),%rax
+  400b9b:       89 d6                   mov    %edx,%esi
+  400b9d:       48 89 c7                mov    %rax,%rdi
+  400ba0:       e8 e7 fe ff ff          callq  400a8c <releaseMem>
+  400ba5:       b8 00 00 00 00          mov    $0x0,%eax
+  400baa:       c9                      leaveq
+  400bab:       c3                      retq
+
+0000000000400770 <main>:
+  400770:       55                      push   %rbp
+  400771:       48 89 e5                mov    %rsp,%rbp
+  400774:       41 55                   push   %r13
+  400776:       41 54                   push   %r12
+  400778:       53                      push   %rbx
+  400779:       48 83 ec 08             sub    $0x8,%rsp
+  40077d:       e8 ae ff ff ff          callq  400730 <mcount@plt>
+  400782:       ba 00 00 10 00          mov    $0x100000,%edx
+  400787:       be 01 00 00 00          mov    $0x1,%esi
+  40078c:       bf 25 0f 40 00          mov    $0x400f25,%edi
+  400791:       e8 ea 01 00 00          callq  400980 <obtainIntInRange>
+  400796:       ba 10 00 00 00          mov    $0x10,%edx
+  40079b:       be 01 00 00 00          mov    $0x1,%esi
+  4007a0:       bf 37 0f 40 00          mov    $0x400f37,%edi
+  4007a5:       89 c3                   mov    %eax,%ebx
+  4007a7:       e8 d4 01 00 00          callq  400980 <obtainIntInRange>
+  4007ac:       ba 02 00 00 00          mov    $0x2,%edx
+  4007b1:       be 01 00 00 00          mov    $0x1,%esi
+  4007b6:       bf 50 0f 40 00          mov    $0x400f50,%edi
+  4007bb:       89 05 e7 18 20 00       mov    %eax,0x2018e7(%rip)        # 6020a8 <strLen>
+  4007c1:       e8 ba 01 00 00          callq  400980 <obtainIntInRange>
+  4007c6:       89 df                   mov    %ebx,%edi
+  4007c8:       41 89 c5                mov    %eax,%r13d
+  4007cb:       e8 10 02 00 00          callq  4009e0 <generateStringArray>
+  4007d0:       41 83 fd 01             cmp    $0x1,%r13d
+  4007d4:       49 89 c4                mov    %rax,%r12
+  4007d7:       74 33                   je     40080c <main+0x9c>
+  4007d9:       41 83 fd 02             cmp    $0x2,%r13d
+  4007dd:       75 0c                   jne    4007eb <main+0x7b>
+  4007df:       48 89 c7                mov    %rax,%rdi
+  4007e2:       89 de                   mov    %ebx,%esi
+  4007e4:       31 c0                   xor    %eax,%eax
+  4007e6:       e8 45 06 00 00          callq  400e30 <quickSort>
+  4007eb:       89 de                   mov    %ebx,%esi
+  4007ed:       4c 89 e7                mov    %r12,%rdi
+  4007f0:       e8 9b 02 00 00          callq  400a90 <print>
+  4007f5:       89 de                   mov    %ebx,%esi
+  4007f7:       4c 89 e7                mov    %r12,%rdi
+  4007fa:       e8 11 03 00 00          callq  400b10 <releaseMem>
+  4007ff:       48 83 c4 08             add    $0x8,%rsp
+  400803:       31 c0                   xor    %eax,%eax
+  400805:       5b                      pop    %rbx
+  400806:       41 5c                   pop    %r12
+  400808:       41 5d                   pop    %r13
+  40080a:       5d                      pop    %rbp
+  40080b:       c3                      retq
+  40080c:       48 89 c7                mov    %rax,%rdi
+  40080f:       89 de                   mov    %ebx,%esi
+  400811:       31 c0                   xor    %eax,%eax
+  400813:       e8 48 03 00 00          callq  400b60 <insertionSort>
+  400818:       eb d1                   jmp    4007eb <main+0x7b>
+  40081a:       66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
+
+iii. Swap() is compiled differently in assign1-0 shown in the first piece vs assign1-2 shown in the second piece. In assign1-0, we can find some repetitive work.
+
+000000000040085d <swap>:
+  40085d:       55                      push   %rbp
+  40085e:       48 89 e5                mov    %rsp,%rbp
+  400861:       48 83 ec 20             sub    $0x20,%rsp
+  400865:       e8 86 fe ff ff          callq  4006f0 <mcount@plt>
+  40086a:       48 89 7d e8             mov    %rdi,-0x18(%rbp)
+  40086e:       89 75 e4                mov    %esi,-0x1c(%rbp)
+  400871:       89 55 e0                mov    %edx,-0x20(%rbp)
+  400874:       8b 45 e4                mov    -0x1c(%rbp),%eax
+  400877:       48 98                   cltq
+  400879:       48 8d 14 c5 00 00 00    lea    0x0(,%rax,8),%rdx
+  400880:       00
+  400881:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  400885:       48 01 d0                add    %rdx,%rax
+  400888:       48 8b 00                mov    (%rax),%rax
+  40088b:       48 89 45 f8             mov    %rax,-0x8(%rbp)
+  40088f:       8b 45 e4                mov    -0x1c(%rbp),%eax
+  400892:       48 98                   cltq
+  400894:       48 8d 14 c5 00 00 00    lea    0x0(,%rax,8),%rdx
+  40089b:       00
+  40089c:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  4008a0:       48 01 c2                add    %rax,%rdx
+  4008a3:       8b 45 e0                mov    -0x20(%rbp),%eax
+  4008a6:       48 98                   cltq
+  4008a8:       48 8d 0c c5 00 00 00    lea    0x0(,%rax,8),%rcx
+  4008af:       00
+  4008b0:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  4008b4:       48 01 c8                add    %rcx,%rax
+  4008b7:       48 8b 00                mov    (%rax),%rax
+  4008ba:       48 89 02                mov    %rax,(%rdx)
+  4008bd:       8b 45 e0                mov    -0x20(%rbp),%eax
+  4008c0:       48 98                   cltq
+  4008c2:       48 8d 14 c5 00 00 00    lea    0x0(,%rax,8),%rdx
+  4008c9:       00
+  4008ca:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  4008ce:       48 01 c2                add    %rax,%rdx
+  4008d1:       48 8b 45 f8             mov    -0x8(%rbp),%rax
+  4008d5:       48 89 02                mov    %rax,(%rdx)
+  4008d8:       c9                      leaveq
+  4008d9:       c3                      retq
+
+0000000000400950 <swap>:
+  400950:       55                      push   %rbp
+  400951:       48 89 e5                mov    %rsp,%rbp
+  400954:       e8 d7 fd ff ff          callq  400730 <mcount@plt>
+  400959:       48 63 f6                movslq %esi,%rsi
+  40095c:       48 63 d2                movslq %edx,%rdx
+  40095f:       48 8d 0c f7             lea    (%rdi,%rsi,8),%rcx
+  400963:       48 8d 04 d7             lea    (%rdi,%rdx,8),%rax
+  400967:       48 8b 31                mov    (%rcx),%rsi
+  40096a:       48 8b 10                mov    (%rax),%rdx
+  40096d:       48 89 11                mov    %rdx,(%rcx)
+  400970:       48 89 30                mov    %rsi,(%rax)
+  400973:       5d                      pop    %rbp
+  400974:       c3                      retq
+  400975:       90                      nop
+  400976:       66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  40097d:       00 00 00
+
+iv. In assign1-2, the compiler uses more registers in obtainIntInRange(), generateStringArray(), print(), releaseMem(), insertionSort(), partition(), pivot(), quickSort(). The following code shows the difference mentioned. The first piece from assign1-0 and the second piece from assign1-2.
+
+0000000000400ea8 <quickSort_>:
+  400ea8:       55                      push   %rbp
+  400ea9:       48 89 e5                mov    %rsp,%rbp
+  400eac:       48 83 ec 20             sub    $0x20,%rsp
+  400eb0:       e8 3b f8 ff ff          callq  4006f0 <mcount@plt>
+  400eb5:       48 89 7d e8             mov    %rdi,-0x18(%rbp)
+  400eb9:       89 75 e4                mov    %esi,-0x1c(%rbp)
+  400ebc:       89 55 e0                mov    %edx,-0x20(%rbp)
+  400ebf:       8b 45 e4                mov    -0x1c(%rbp),%eax
+  400ec2:       3b 45 e0                cmp    -0x20(%rbp),%eax
+  400ec5:       7d 6e                   jge    400f35 <quickSort_+0x8d>
+  400ec7:       8b 55 e0                mov    -0x20(%rbp),%edx
+  400eca:       8b 4d e4                mov    -0x1c(%rbp),%ecx
+  400ecd:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  400ed1:       89 ce                   mov    %ecx,%esi
+  400ed3:       48 89 c7                mov    %rax,%rdi
+  400ed6:       e8 37 fe ff ff          callq  400d12 <pivot>
+  400edb:       89 45 fc                mov    %eax,-0x4(%rbp)
+  400ede:       8b 45 fc                mov    -0x4(%rbp),%eax
+  400ee1:       48 98                   cltq
+  400ee3:       48 8d 14 c5 00 00 00    lea    0x0(,%rax,8),%rdx
+  400eea:       00
+  400eeb:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  400eef:       48 01 d0                add    %rdx,%rax
+  400ef2:       48 8b 30                mov    (%rax),%rsi
+  400ef5:       8b 4d e0                mov    -0x20(%rbp),%ecx
+  400ef8:       8b 55 e4                mov    -0x1c(%rbp),%edx
+  400efb:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  400eff:       48 89 c7                mov    %rax,%rdi
+  400f02:       e8 4d fd ff ff          callq  400c54 <partition>
+  400f07:       89 45 fc                mov    %eax,-0x4(%rbp)
+  400f0a:       8b 55 fc                mov    -0x4(%rbp),%edx
+  400f0d:       8b 4d e4                mov    -0x1c(%rbp),%ecx
+  400f10:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  400f14:       89 ce                   mov    %ecx,%esi
+  400f16:       48 89 c7                mov    %rax,%rdi
+  400f19:       e8 8a ff ff ff          callq  400ea8 <quickSort_>
+  400f1e:       8b 45 fc                mov    -0x4(%rbp),%eax
+  400f21:       8d 48 01                lea    0x1(%rax),%ecx
+  400f24:       8b 55 e0                mov    -0x20(%rbp),%edx
+  400f27:       48 8b 45 e8             mov    -0x18(%rbp),%rax
+  400f2b:       89 ce                   mov    %ecx,%esi
+  400f2d:       48 89 c7                mov    %rax,%rdi
+  400f30:       e8 73 ff ff ff          callq  400ea8 <quickSort_>
+  400f35:       c9                      leaveq
+  400f36:       c3                      retq
+
+0000000000400dc0 <quickSort_>:
+  400dc0:       55                      push   %rbp
+  400dc1:       48 89 e5                mov    %rsp,%rbp
+  400dc4:       41 56                   push   %r14
+  400dc6:       41 55                   push   %r13
+  400dc8:       41 54                   push   %r12
+  400dca:       53                      push   %rbx
+  400dcb:       e8 60 f9 ff ff          callq  400730 <mcount@plt>
+  400dd0:       39 d6                   cmp    %edx,%esi
+  400dd2:       49 89 fc                mov    %rdi,%r12
+  400dd5:       89 f3                   mov    %esi,%ebx
+  400dd7:       41 89 d5                mov    %edx,%r13d
+  400dda:       7d 3c                   jge    400e18 <quickSort_+0x58>
+  400ddc:       0f 1f 40 00             nopl   0x0(%rax)
+  400de0:       89 de                   mov    %ebx,%esi
+  400de2:       44 89 ea                mov    %r13d,%edx
+  400de5:       4c 89 e7                mov    %r12,%rdi
+  400de8:       e8 d3 fe ff ff          callq  400cc0 <pivot>
+  400ded:       48 98                   cltq
+  400def:       89 da                   mov    %ebx,%edx
+  400df1:       44 89 e9                mov    %r13d,%ecx
+  400df4:       49 8b 34 c4             mov    (%r12,%rax,8),%rsi
+  400df8:       4c 89 e7                mov    %r12,%rdi
+  400dfb:       e8 00 fe ff ff          callq  400c00 <partition>
+  400e00:       41 89 c6                mov    %eax,%r14d
+  400e03:       89 de                   mov    %ebx,%esi
+  400e05:       89 c2                   mov    %eax,%edx
+  400e07:       41 8d 5e 01             lea    0x1(%r14),%ebx
+  400e0b:       4c 89 e7                mov    %r12,%rdi
+  400e0e:       e8 ad ff ff ff          callq  400dc0 <quickSort_>
+  400e13:       44 39 eb                cmp    %r13d,%ebx
+  400e16:       7c c8                   jl     400de0 <quickSort_+0x20>
+  400e18:       5b                      pop    %rbx
+  400e19:       41 5c                   pop    %r12
+  400e1b:       41 5d                   pop    %r13
+  400e1d:       41 5e                   pop    %r14
+  400e1f:       5d                      pop    %rbp
+  400e20:       c3                      retq
+  400e21:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+  400e26:       66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  400e2d:       00 00 00
+
