@@ -336,7 +336,7 @@ void	getFile		(int		clientFD
  
   if  (inFd < 0)
   {
-    int toSend = htonl(-1);
+    int toSend = htonl(NO_FILE_RESPONSE);
     write(clientFD, &toSend, sizeof(toSend));
     return;
   }
